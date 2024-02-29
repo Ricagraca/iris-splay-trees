@@ -1,0 +1,83 @@
+\documentclass{article}
+
+\usepackage{bussproofs}
+<<<<<<< HEAD
+=======
+
+\begin{document}
+	
+	{\large \textbf{
+	Problems that are occurring}:	
+	}
+>>>>>>> splay_tree_generalized
+
+\usepackage[demo]{graphicx}
+\usepackage{subfig}
+
+\begin{document}
+	
+	\newpage
+	\section{Tactics}
+	This section presents some of the tactics that I used to automize some of the proofs of the Splay Tree algorithm. Reduction tactics try to reduce hypothesis/conclusions without creating any extra hypothesis. One example of a tactic that creates new hypothesis is Modus Ponens: If we have P and P $\rightarrow$ Q then Q is added to the context. Lets go trough all of these tactics one by one to see how they behave in a generalized context $\Gamma$. 
+	
+	\subsection{Logical}
+	Lets start by enumerating some of the logical reductions that we used for our proofs and may use for future proofs. Lets start with a simple one: If something in our context evaluates to True, such as $a = a$ by reflexivity, then we can discard it since it will not be of any use to have it in our context. This tactic will be useful to clean the proof context so we can see which hypothesis we should really be looking at. 
+	
+<<<<<<< HEAD
+	 \begin{prooftree}
+	 	\AxiomC{$\Gamma \vdash $ C}
+	 	\UnaryInfC{$ \{ $True , $\ \Gamma \} \vdash $ C }
+	 \end{prooftree} 
+ 
+ 	\bigskip
+ 	
+ 	A logical tactic that is useful whenever we have an hypothesis in our context which is a conjunction of propositions such as H1 $ \land $ H2 is coqs "destruct" tactic. However, whenever we have too many conjunctions it may be tedious to destroy them all. Therefore, we can create an iterative rule that performs this automatically, however the name given to all of the hypothesis are, for the meantime, attributed by Coq. This applies for disjunction as well.
+ 	
+ 	
+ 	\begin{prooftree}
+ 		\AxiomC{$ \{ $H1 , H2 , $\ \Gamma \} \vdash $ C}
+ 		\UnaryInfC{$ \{ $H1 $\land$ H2 , $\ \Gamma \} \vdash $ C }
+ 	\end{prooftree} 	
+ 
+ 
+ 	\begin{prooftree}
+ 		\AxiomC{$ \{ $H1 , $\ \Gamma \} \vdash $ C}
+ 		\AxiomC{$ \{ $H2 , $\ \Gamma \} \vdash $ C}
+ 		\BinaryInfC{$ \{ $H1 $\lor$ H2 , $\ \Gamma \} \vdash $ C }
+ 	\end{prooftree} 	
+ 	
+ 	\newpage
+ 	\section{Proven Theorems}
+ 	The first part of this project was to prove a simple functional implementation of the Splay Tree algorithm. This implementation is the same as Nipkow, but it was written in Gallina and proved with Coq proof assistant instead of Isabelle. We have used in most of these proofs, functional induction and we have proved important theorems that assure us that the implementation is correct. 
+ 	
+=======
+	{\large \textbf{
+			TODO:
+	}
+		
+		
+	
+	\newpage
+	\section{Tactics}
+	This section presents some of the tactics that I used to automize some of the proofs of the Splay Tree algorithm. Reduction tactics try to reduce hypothesis/conclusions without creating any extra hypothesis. However, we can lose information of some of the reduction that it does! We can change this later... Lets enumerate them here for organization purposes!
+	
+	\subsection{Logical}
+	 A logical reduction involves anything that deals with logic connectives and other things such as quantifiers... 
+	 
+	 \begin{prooftree}
+	 	%\AxiomC{A}
+	 	%\UnaryInfC{B}
+	 	%\AxiomC{C}
+	 	%\BinaryInfC{D}
+	 	%\AxiomC{E}
+	 	%\AxiomC{F}
+	 	%\BinaryInfC{G}
+	 	%\UnaryInfC{H}
+	 	%\BinaryInfC{J}
+	 	\AxiomC{E}
+	 	\AxiomC{F}
+	 	\BinaryInfC{G}
+	 \end{prooftree}
+>>>>>>> splay_tree_generalized
+			
+\end{document}

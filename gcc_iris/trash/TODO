@@ -1,0 +1,5 @@
+Arranjar uma maneira de devolver o apontador para uma chave para a poder mudar. 
+- Não acho que seja o mais importante agora, mas deve ser mudado.
+- C não tem construtores, tem variáveis que tem endereço em memória, diferente de uma linguagem funcional!!!
+- Problemas, transformar o código que tem o & (endereço na linguagem C) para uma linguagem funcional sem ter de criar outro apontador.
+

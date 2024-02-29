@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>examples</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library examples</h1>
+
+<div class="code">
+<span class="id" title="keyword">From</span> <span class="id" title="var">iris.heap_lang</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">notation</span> <span class="id" title="var">lib.assert</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="var">Coq.omega.Omega</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="var">Coq.micromega.Lia</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">example_tree</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">InjR</span> (<span class="id" title="var">InjL</span> #4 , #2 , <span class="id" title="var">InjL</span> #5).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">f</span> <span class="id" title="var">e</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">e</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">InjR</span> <span class="id" title="var">e1</span> =&gt; <span class="id" title="var">e1</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> =&gt; <span class="id" title="var">InjL</span> #()<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Compute</span> (<span class="id" title="var">f</span> <span class="id" title="var">example_tree</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">list_of_nat_to_value</span> (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Z</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">l</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; <span class="id" title="var">InjLV</span> #()<br/>
+&nbsp;&nbsp;| <span class="id" title="var">hd</span>::<span class="id" title="var">tl</span> =&gt; <span class="id" title="var">InjRV</span> (#<span class="id" title="var">hd</span>, <span class="id" title="var">list_of_nat_to_value</span> <span class="id" title="var">tl</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Compute</span> (<span class="id" title="var">list_of_nat_to_value</span> [5;2;3]).<br/>
+
+<br/>
+<span class="id" title="keyword">Check</span> <span class="id" title="var">bi_sep</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">iris.program_logic</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">weakestpre</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">iris.heap_lang</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">notation</span> <span class="id" title="var">lang</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">iris.proofmode</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">tactics</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">iris.heap_lang</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">proofmode</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Proof</span> <span class="id" title="var">Using</span> "Type".<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">list_model</span>.<br/>
+<span class="id" title="keyword">Context</span> `{!<span class="id" title="var">heapG</span> <span class="id" title="var">Σ</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">iProp</span> := (<span class="id" title="var">iProp</span> <span class="id" title="var">Σ</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Implicit</span> <span class="id" title="keyword">Types</span> <span class="id" title="var">l</span> : <span class="id" title="var">loc</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">is_list</span> (<span class="id" title="var">hd</span> : <span class="id" title="var">val</span>) (<span class="id" title="var">xs</span> : <span class="id" title="var">list</span> <span class="id" title="var">Z</span>) : <span class="id" title="var">iProp</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">xs</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; ⌜<span class="id" title="var">hd</span> = <span class="id" title="var">InjLV</span> (#())⌝<br/>
+&nbsp;&nbsp;| <span class="id" title="var">x</span> :: <span class="id" title="var">xs</span> =&gt; ∃ <span class="id" title="var">l</span> <span class="id" title="var">hd'</span>, ⌜<span class="id" title="var">hd</span> = <span class="id" title="var">InjRV</span> #<span class="id" title="var">l</span>⌝ ∗ <span class="id" title="var">l</span> ↦ (#<span class="id" title="var">x</span>,<span class="id" title="var">hd'</span>) ∗ <span class="id" title="var">is_list</span> <span class="id" title="var">hd'</span> <span class="id" title="var">xs</span><br/>
+<span class="id" title="keyword">end</span>%<span class="id" title="var">I</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">insert</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">rec</span>: "insert" "l" "v" :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span>: !"l" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span>     =&gt; <span class="id" title="var">ref</span> (<span class="id" title="var">SOME</span> ("v", <span class="id" title="var">NONE</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "e" =&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span>: "x" := <span class="id" title="var">Fst</span> "e" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span>: "p" := <span class="id" title="var">Snd</span> "e" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span>: "v" ≤ "x" <span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">ref</span> (<span class="id" title="var">SOME</span> ("v", "l"))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"insert" "p" "v" ;;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"l" &lt;- <span class="id" title="var">SOME</span> ("x","p")<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">list_example2</span> :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">True</span> }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">insert</span> (<span class="id" title="var">insert</span> (<span class="id" title="var">ref</span> <span class="id" title="var">NONE</span>) #3) #2<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">w</span> , <span class="id" title="var">RET</span> #<span class="id" title="var">w</span>; ∃ <span class="id" title="var">l2</span>, <span class="id" title="var">w</span> ↦ <span class="id" title="var">SOMEV</span> (#2, #<span class="id" title="var">l2</span>) ∗ <span class="id" title="var">l2</span> ↦ <span class="id" title="var">SOMEV</span> (#3, <span class="id" title="var">NONEV</span>) }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">Φ</span>) "H1 H2".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">insert</span>. <span class="id" title="var">wp_alloc</span> <span class="id" title="var">l</span> <span class="id" title="keyword">as</span> "H".<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_match</span>. <span class="id" title="var">wp_alloc</span> <span class="id" title="var">r</span> <span class="id" title="keyword">as</span> "H3".<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_match</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 (<span class="id" title="var">wp_proj</span> ; <span class="id" title="var">wp_let</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_op</span>. <span class="id" title="var">wp_if_true</span>. <span class="id" title="var">wp_alloc</span> <span class="id" title="var">q</span> <span class="id" title="keyword">as</span> "H4".<br/>
+&nbsp;&nbsp;<span class="id" title="var">iApply</span> "H2". <span class="id" title="var">iExists</span> <span class="id" title="var">r</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iSplitL</span> "H4" ; <span class="id" title="var">iFrame</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">mul</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">rec</span>: "mul" "hd" :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span>: "hd" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span>     =&gt; #1<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "l" =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span>: "x" := <span class="id" title="var">Fst</span> ! "l" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span>: "p" := <span class="id" title="var">Snd</span> ! "l" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"x" * ("mul" "p")<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">mul_list</span> <span class="id" title="var">xs</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">xs</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; 1<br/>
+&nbsp;&nbsp;| <span class="id" title="var">hd</span> :: <span class="id" title="var">tl</span> =&gt; <span class="id" title="var">hd</span> * (<span class="id" title="var">mul_list</span> <span class="id" title="var">tl</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inc_spec</span> (<span class="id" title="var">hd</span> : <span class="id" title="var">val</span>) (<span class="id" title="var">xs</span> : <span class="id" title="var">list</span> <span class="id" title="var">Z</span>) :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">is_list</span> <span class="id" title="var">hd</span> <span class="id" title="var">xs</span> }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mul</span> <span class="id" title="var">hd</span><br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">w</span>, <span class="id" title="var">RET</span> <span class="id" title="var">w</span>; ⌜<span class="id" title="var">w</span> = #(<span class="id" title="var">mul_list</span> <span class="id" title="var">xs</span>)⌝ }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">ϕ</span>) "Hxs H".<br/>
+&nbsp;&nbsp;<span class="id" title="var">iInduction</span> <span class="id" title="var">xs</span> <span class="id" title="keyword">as</span> [|] "IH" <span class="id" title="keyword">forall</span> (<span class="id" title="var">hd</span> <span class="id" title="var">ϕ</span>).<br/>
+&nbsp;&nbsp;+ <span class="id" title="var">iSimpl</span> <span class="id" title="tactic">in</span> "Hxs". <span class="id" title="var">iDestruct</span> "Hxs" <span class="id" title="keyword">as</span> "%".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span>. <span class="id" title="var">wp_rec</span>. <span class="id" title="var">wp_match</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> "H". <span class="id" title="var">iSimpl</span>. <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;+ <span class="id" title="var">iDestruct</span> "Hxs" <span class="id" title="keyword">as</span> (<span class="id" title="var">l</span> <span class="id" title="var">hd'</span>) "[% [H2 H3]]".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">wp_rec</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span>. <span class="id" title="var">wp_match</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 (<span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_proj</span> ; <span class="id" title="var">wp_let</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iSpecialize</span> ("IH" <span class="id" title="keyword">with</span> "H3").<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iSimpl</span> <span class="id" title="tactic">in</span> "H". <span class="id" title="keyword">Check</span> #<span class="id" title="var">a</span>. <span class="id" title="keyword">Check</span> (<span class="id" title="var">mul</span> <span class="id" title="var">hd'</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">wp_pures</span>. <span class="id" title="var">wp_bind</span> (<span class="id" title="var">mul</span> <span class="id" title="var">hd'</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> "IH". <span class="id" title="var">iNext</span>. <span class="id" title="var">iIntros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">a0</span>. <span class="id" title="var">wp_op</span>. <span class="id" title="var">iApply</span> "H". <span class="id" title="var">done</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">right_child</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">λ</span>: "v",<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span>: !"v" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span>     =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "p" =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span>: <span class="id" title="var">Snd</span> "p" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span> =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "pl" =&gt; <span class="id" title="var">Snd</span> "pl"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">left_child</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">λ</span>: "v",<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span>: !"v" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span>     =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "p" =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span>: <span class="id" title="var">Snd</span> "p" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span> =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "pr" =&gt; <span class="id" title="var">Fst</span> "pr"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">change_left_child</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">λ</span>: "r" "v",<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span>: !"r" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span>     =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "p" =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span>: <span class="id" title="var">Snd</span> "p" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span> =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "pr" =&gt; <span class="id" title="var">SOME</span> (<span class="id" title="var">Fst</span> "p", <span class="id" title="var">SOME</span>("v", <span class="id" title="var">Snd</span> "pr"))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">change_right_child</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">λ</span>: "r" "v",<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span>: !"r" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span>     =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "p" =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span>: <span class="id" title="var">Snd</span> "p" <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">NONE</span> =&gt; <span class="id" title="var">NONE</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">SOME</span> "pr" =&gt; <span class="id" title="var">SOME</span> (<span class="id" title="var">Fst</span> "p", <span class="id" title="var">SOME</span>(<span class="id" title="var">Fst</span> "pr", "v"))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">func</span> : <span class="id" title="var">val</span> := <span class="id" title="keyword">rec</span>: "func" "p" :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span>: (!"p" &lt; #10) &amp;&amp; (#1 ≠ #0) <span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;("p" &lt;- !"p" + #1 ;; "func" "p")<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;#().<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">rotate_left_spec</span> `{!<span class="id" title="var">heapG</span> <span class="id" title="var">Σ</span>} (<span class="id" title="var">p</span> : <span class="id" title="var">loc</span>) :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">p</span> ↦ #0 }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="keyword">rec</span>: "func" "p" :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span>: (!"p" &lt; #10) &amp;&amp; (#1 ≠ #0) <span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;("p" &lt;- !"p" + #1 ;; "func" "p")<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;#()) (#<span class="id" title="var">p</span>)<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">RET</span> #() ; <span class="id" title="var">p</span> ↦ #10 }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">Φ</span>) "Hp H".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 10 (<span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_op</span> ; <span class="id" title="var">wp_if</span> ; <span class="id" title="var">wp_op</span> ; <span class="id" title="var">wp_op</span> ; <span class="id" title="var">wp_if</span> ; <span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_store</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_lam</span>. <span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_op</span>. <span class="id" title="var">wp_if</span>. <span class="id" title="var">wp_if</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iApply</span> "H". <span class="id" title="var">done</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">rotate_left</span> : <span class="id" title="var">val</span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">λ</span>: "pp" "p" "n",<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span>: "tmp" := <span class="id" title="var">create_node</span> #0 <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;"tmp" &lt;- (<span class="id" title="var">right_child</span> "n") ;;<br/>
+&nbsp;&nbsp;&nbsp;"n" &lt;- <span class="id" title="var">change_right_child</span> "n" "p" ;;<br/>
+&nbsp;&nbsp;&nbsp;"p" &lt;- <span class="id" title="var">change_left_child</span> "p" !"tmp";;<br/>
+&nbsp;&nbsp;&nbsp;!"pp" &lt;- "n".<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">rotate_left_spec</span> `{!<span class="id" title="var">heapG</span> <span class="id" title="var">Σ</span>} (<span class="id" title="var">pp</span> <span class="id" title="var">pp'</span> <span class="id" title="var">p</span> <span class="id" title="var">n</span> : <span class="id" title="var">loc</span>) <span class="id" title="var">v1</span> <span class="id" title="var">p1</span> <span class="id" title="var">v2</span> <span class="id" title="var">n1</span> <span class="id" title="var">n2</span> :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">pp</span> ↦ #<span class="id" title="var">pp'</span> ∗ <span class="id" title="var">pp'</span> ↦ - ∗ <span class="id" title="var">p</span> ↦ <span class="id" title="var">SOMEV</span>(<span class="id" title="var">v1</span>,<span class="id" title="var">InjRV</span>(#<span class="id" title="var">n</span>,<span class="id" title="var">p1</span>)) ∗ <span class="id" title="var">n</span> ↦ <span class="id" title="var">SOMEV</span>(<span class="id" title="var">v2</span>,<span class="id" title="var">InjRV</span>(<span class="id" title="var">n1</span>,<span class="id" title="var">n2</span>)) }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">rotate_left</span> #<span class="id" title="var">pp</span> #<span class="id" title="var">p</span> #<span class="id" title="var">n</span><br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">RET</span> #() ; <span class="id" title="var">pp'</span> ↦ #<span class="id" title="var">n</span> ∗ <span class="id" title="var">p</span> ↦ <span class="id" title="var">SOMEV</span>(<span class="id" title="var">v1</span>,<span class="id" title="var">SOMEV</span>(<span class="id" title="var">n2</span>,<span class="id" title="var">p1</span>)) ∗ <span class="id" title="var">n</span> ↦ <span class="id" title="var">SOMEV</span>(<span class="id" title="var">v2</span>,<span class="id" title="var">SOMEV</span>(<span class="id" title="var">n1</span>,#<span class="id" title="var">p</span>)) }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">Φ</span>) "Hp H".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">rotate_left</span>. <span class="id" title="var">wp_lam</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iDestruct</span> "Hp" <span class="id" title="keyword">as</span> "[H1 [H2 [H3 H4]]]".<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_let</span>. <span class="id" title="var">wp_let</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">create_node</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_lam</span>. <span class="id" title="var">wp_alloc</span> <span class="id" title="var">tmp</span> <span class="id" title="keyword">as</span> "Htmp".<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_let</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">right_child</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_lam</span>. <span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_match</span>. <span class="id" title="var">wp_proj</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_match</span>. <span class="id" title="var">wp_proj</span>. <span class="id" title="var">wp_store</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">change_right_child</span>. <span class="id" title="var">wp_lam</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_match</span>. <span class="id" title="var">wp_proj</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_match</span>. <span class="id" title="var">wp_proj</span>. <span class="id" title="var">wp_store</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">change_left_child</span>. <span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_lam</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_match</span>. <span class="id" title="var">wp_proj</span>. <span class="id" title="var">wp_match</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_store</span>. <span class="id" title="var">wp_load</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iDestruct</span> "H2" <span class="id" title="keyword">as</span> (<span class="id" title="var">l</span>) "H'". <span class="id" title="var">wp_store</span>. <span class="id" title="var">iApply</span> "H". <span class="id" title="var">iFrame</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">func</span> : <span class="id" title="var">val</span> := <span class="id" title="keyword">rec</span>: "func" "p" :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span>: !"p" &lt; #10 <span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;("p" &lt;- !"p" + #1 ;; "func" "p")<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;#().<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">func_spec</span> `{!<span class="id" title="var">heapG</span> <span class="id" title="var">Σ</span>} (<span class="id" title="var">p</span> : <span class="id" title="var">loc</span>) :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">p</span> ↦ #1 }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">func</span> #<span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">RET</span> #() ; <span class="id" title="var">p</span> ↦ #10 }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">Φ</span>) "Hp H".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 9 (<span class="id" title="var">wp_lam</span> ; <span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_pures</span> ; <span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_pures</span> ; <span class="id" title="var">wp_store</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_lam</span>. <span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_pures</span>. <span class="id" title="var">iApply</span> "H". <span class="id" title="var">iApply</span> "Hp".<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">func1</span> : <span class="id" title="var">val</span> := <span class="id" title="keyword">rec</span>: "func1" "p" "q" :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span>: !"p" &lt; #10 <span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;("p" &lt;- !"p" + #1 ;; "func1" "p" "q" )<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;#().<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">func_spec1</span> `{!<span class="id" title="var">heapG</span> <span class="id" title="var">Σ</span>} (<span class="id" title="var">p</span> : <span class="id" title="var">loc</span>) :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">p</span> ↦ #1 }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">func1</span> #<span class="id" title="var">p</span> #0<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">RET</span> #() ; <span class="id" title="var">p</span> ↦ #10 }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">Φ</span>) "Hp H".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 9 (<span class="id" title="var">wp_lam</span> ; <span class="id" title="var">wp_let</span> ; <span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_pures</span> ; <span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_pures</span> ; <span class="id" title="var">wp_store</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_lam</span>. <span class="id" title="var">wp_let</span>. <span class="id" title="var">wp_load</span>. <span class="id" title="var">wp_pures</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iApply</span> "H". <span class="id" title="var">iApply</span> "Hp".<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">func2</span> : <span class="id" title="var">val</span> := <span class="id" title="keyword">rec</span>: "func2" "f" "x" "q" "r" :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span>: "q" &lt; "r" <span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span>:  "y" := "q" + #1 <span class="id" title="tactic">in</span>                             <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;("f" "x" ;; "func2" "f" "x" "y" "r" )<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;#().<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">func_spec2</span> `{!<span class="id" title="var">heapG</span> <span class="id" title="var">Σ</span>} (<span class="id" title="var">p</span> : <span class="id" title="var">loc</span>) :<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">p</span> ↦ #0 }}}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">func2</span> (<span class="id" title="var">λ</span>: "x", "x" &lt;- !"x" + #1) #<span class="id" title="var">p</span> #0 #10<br/>
+&nbsp;&nbsp;{{{ <span class="id" title="var">RET</span> #() ; <span class="id" title="var">p</span> ↦ #10 }}}.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (<span class="id" title="var">Φ</span>) "Hp H".<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_pures</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 10 (<span class="id" title="var">wp_rec</span> ; <span class="id" title="tactic">do</span> 3 <span class="id" title="var">wp_let</span> ; <span class="id" title="var">wp_pures</span> ;<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_load</span> ; <span class="id" title="var">wp_store</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">wp_rec</span>. <span class="id" title="tactic">do</span> 3 <span class="id" title="var">wp_let</span>. <span class="id" title="var">wp_pures</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">iApply</span> "H". <span class="id" title="var">iApply</span> "Hp".<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>
